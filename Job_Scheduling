@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct Job {
+    int id;   
+    int deadline; 
+    int profit;   
+};
+int compare(const void *a, const void *b) {
+    struct Job *a1 = (struct Job *)a;
+    struct Job *b1 = (struct Job *)b;
+    return b1->profit - a1->profit;  
+}
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
+void printJobScheduling(struct Job arr[], int n) {
+    qsort(arr, n, sizeof(arr[0]), compare);
+    int result[n];  
+    int slot[n];    
+    int i;
+    for (i = 0; i < n; i++) {
+        slot[i] = -1;  
+    }
+    for (i = 0; i < n; i++) {
+        int j;
+        for (j = min(n, arr[i].deadline) - 1; j >= 0; j--) {
+            if (slot[j] == -1) {  
+                slot[j] = i;  
+                break;         
+            }
+        }
+    }
+    printf("\nFollowing jobs are scheduled: \n");
+    for (i = 0; i < n; i++) {
+        if (slot[i] != -1) {  
+            printf("Job %d (Profit: %d)\n", arr[slot[i]].id, arr[slot[i]].profit);
+        }
+    }
+}
+int main() {
+    int n;
+    printf("Enter the number of jobs: ");
+    scanf("%d", &n);
+    struct Job arr[n];
+    printf("Enter job id, deadline, and profit for each job:\n");
+    int i;
+    for (i = 0; i < n; i++) {
+        printf("Job %d: ", i + 1);
+        scanf("%d %d %d", &arr[i].id, &arr[i].deadline, &arr[i].profit);
+    }
+    printJobScheduling(arr, n);
+}
